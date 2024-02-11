@@ -29,7 +29,7 @@ func EncodeBase36(num int) string {
 		num /= 36
 	}
 
-	return reverseString(result.String())
+	return ReverseString(result.String())
 }
 
 func DecodeBase36(s string) (int, error) {
@@ -57,7 +57,7 @@ func Encode64Base36(num int64) string {
 		num /= 36
 	}
 
-	return reverseString(result.String())
+	return ReverseString(result.String())
 }
 
 func Decode64Base36(s string) (int64, error) {

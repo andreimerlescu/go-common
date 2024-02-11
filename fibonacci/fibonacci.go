@@ -1,17 +1,37 @@
 package fibonacci
 
-var cached = make(map[int]int) // depth=value
+type CachedResults map[int]int
 
-var nearFreeDepth = 25
+var cached = make(CachedResults) // depth=value
+
+var freeCostDepth = 25
+var expensiveCostDepthLimit = 33
 
 func SetMaxDepth(n int) bool {
-	nearFreeDepth = n
-	return nearFreeDepth == n
+	freeCostDepth = n
+	return freeCostDepth == n
+}
+
+func GetMaxDepth() int {
+	return freeCostDepth
+}
+
+func Cached() CachedResults {
+	return cached
+}
+
+func SetCap(n int) bool {
+	expensiveCostDepthLimit = n
+	return expensiveCostDepthLimit == n
+}
+
+func GetCap() int {
+	return expensiveCostDepthLimit
 }
 
 func AtDepth(n int) int {
-	if n > nearFreeDepth {
-		n = nearFreeDepth
+	if n > freeCostDepth {
+		n = freeCostDepth
 	}
 	value, ok := cached[n]
 	if !ok {
@@ -27,19 +47,19 @@ func AtDepth(n int) int {
 
 func cache() {
 	if cached == nil {
-		cached = make(map[int]int)
+		cached = make(CachedResults)
 	}
-	if len(cached) == nearFreeDepth {
+	if len(cached) == freeCostDepth {
 		return
 	}
-	if len(cached) > nearFreeDepth {
+	if len(cached) > freeCostDepth {
 		for k, _ := range cached {
-			if k > 33 {
+			if k > expensiveCostDepthLimit {
 				delete(cached, k)
 			}
 		}
 	}
-	for i := 0; i < 33; i++ {
+	for i := 0; i < expensiveCostDepthLimit; i++ {
 		cached[i] = recursive(i)
 	}
 }

@@ -1,12 +1,11 @@
-package temere
+package v2
 
 import (
 	"bytes"
 	cr "crypto/rand"
 	"math/big"
-	mr "math/rand"
+	mr "math/rand/v2"
 	"strings"
-	"time"
 )
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -16,14 +15,13 @@ const (
 	letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
 )
 
-var randSource = mr.NewSource(time.Now().UnixNano())
-
 func String(n int) string {
 	sb := strings.Builder{}
 	sb.Grow(n)
-	for i, cache, remain := n-1, randSource.Int63(), letterIdxMax; i >= 0; {
+	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
+	for i, cache, remain := n-1, mr.Int32N(int32(n)), letterIdxMax; i >= 0; {
 		if remain == 0 {
-			cache, remain = randSource.Int63(), letterIdxMax
+			cache, remain = mr.Int32N(int32(n)), letterIdxMax
 		}
 		if idx := int(cache & letterIdxMask); idx < len(letterBytes) {
 			sb.WriteByte(letterBytes[idx])
@@ -44,11 +42,6 @@ func Bytes(n int) []byte {
 func Integer(limit int) int {
 	c := make(chan int, 1)
 	go func(l int) int {
-		// Seed the rand engine
-		mr.New( // Who?
-			mr.NewSource( // Who?
-				time.Now().UnixNano())) // When? LOL
-
 		if l <= 0 {
 			return 0
 		}
@@ -66,10 +59,6 @@ func Integer(limit int) int {
 func Integer64(limit int64) int64 {
 	c := make(chan int64, 1)
 	go func(l int64) int64 {
-		// Seed the rand engine
-		mr.New( // Who?
-			mr.NewSource( // Who?
-				time.Now().UnixNano())) // When? LOL
 		if l <= 0 {
 			return 0
 		}

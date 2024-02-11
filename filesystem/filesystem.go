@@ -4,7 +4,7 @@ import (
 	"os"
 )
 
-func pathExists(path string) bool {
+func HasPath(path string) bool {
 	_, err := os.Stat(path)
 	if err == nil {
 		return true // Path exists

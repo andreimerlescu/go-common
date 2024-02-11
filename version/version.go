@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-func ParseVersion(v string) *Version {
-	version := &Version{}
+func FromString(v string) Version {
+	version := Version{}
 	if strings.HasPrefix(v, "v") {
 		v = strings.ReplaceAll(v, `v`, ``)
 		p := strings.Split(v, `.`)
